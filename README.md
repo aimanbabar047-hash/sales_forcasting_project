@@ -1,970 +1,469 @@
-A machine learning project developed during the \*\*EncoderX Internship\*\* to analyze historical sales data, identify sales patterns, compare machine learning models, and forecast future monthly sales.
+# 📊 Sales Forecasting Using Machine Learning
 
+## EncoderX Remote Internship — Batch 02 | Data Science Task
 
+A machine learning project for analyzing historical sales patterns and forecasting future monthly sales using time-based feature engineering and regression models.
 
-\---
+The project uses historical Superstore sales data to identify trends, seasonality, and sales patterns, followed by the development and evaluation of machine learning models for future sales forecasting.
 
+---
 
+## 📌 Project Overview
 
-\## 📌 Project Overview
+Sales forecasting is an important business analytics task that helps organizations plan inventory, manage resources, prepare marketing strategies, and make data-driven operational decisions.
 
+In this project, historical sales transaction data was analyzed and transformed into a monthly time-series forecasting dataset.
 
+The workflow includes:
 
-Sales forecasting helps businesses estimate future demand based on historical sales patterns. Accurate forecasts can support better inventory planning, resource allocation, marketing decisions, and operational planning.
+**Data Collection → Data Cleaning → Exploratory Data Analysis → Feature Engineering → Train/Test Split → Machine Learning → Model Evaluation → Future Forecasting → Business Insights**
 
+Two regression models were developed:
 
+- Linear Regression
+- Random Forest Regressor
 
-In this project, historical sales data was cleaned and analyzed to understand yearly, monthly, and category-level sales patterns. Time-series features such as lag values and rolling averages were then created and used to train machine learning models.
+The models were evaluated using:
 
+- Mean Absolute Error (MAE)
+- Root Mean Squared Error (RMSE)
+- R² Score
 
+A six-month future sales forecast was then generated for January 2015 to June 2015.
 
-Two models were evaluated:
+---
 
+# 🎯 Objectives
 
+The main objectives of this project were to:
 
-\- Linear Regression
+1. Analyze historical sales data.
+2. Identify long-term sales trends.
+3. Explore monthly and yearly sales patterns.
+4. Analyze seasonal sales behavior.
+5. Engineer time-based and lag-based forecasting features.
+6. Develop machine learning models for sales prediction.
+7. Evaluate model performance using standard regression metrics.
+8. Generate future sales forecasts.
+9. Extract business-oriented insights from the analysis.
+10. Provide recommendations that can support data-driven business planning.
 
-\- Random Forest Regressor
+---
 
+# 📂 Dataset
 
+The project uses the **Superstore Data** dataset available through Kaggle.
 
-The models were evaluated using a chronological train-test split to preserve the temporal nature of the data. Based on the test set used in this project, \*\*Linear Regression achieved lower prediction errors than Random Forest\*\* and was therefore used for the future forecasting stage.
+### Dataset Source
 
+Kaggle dataset:
 
+**Superstore Data**
 
-\---
-
-
-
-\## 🎯 Objectives
-
-
-
-The main objectives of this project were:
-
-
-
-\- Clean and preprocess the historical sales dataset.
-
-\- Correctly parse and validate date information.
-
-\- Analyze historical sales trends.
-
-\- Study yearly and monthly sales patterns.
-
-\- Analyze sales performance across product categories and sub-categories.
-
-\- Create time-based forecasting features.
-
-\- Train multiple machine learning models.
-
-\- Compare model performance using MAE, RMSE, and R².
-
-\- Forecast sales for the next six months.
-
-\- Generate business-oriented insights from the analysis.
-
-
-
-\---
-
-
-
-\## 📊 Dataset
-
-
-
-The dataset contains \*\*51,290 sales records\*\* with information related to:
-
-
-
-\- Orders
-
-\- Customers
-
-\- Products
-
-\- Categories
-
-\- Locations
-
-\- Sales
-
-\- Quantity
-
-\- Discount
-
-\- Profit
-
-\- Shipping Cost
-
-\- Order Priority
-
-\- Shipping Information
-
-
-
-\### Dataset Dimensions
-
-
-
-| Property | Value |
-
-|---|---:|
-
-| Original Records | 51,290 |
-
-| Original Features | 24 |
-
-| Final Records | 51,290 |
-
-| Final Features | 24 |
-
-| Duplicate Rows | 0 |
-
-| Date Range | 2011–2014 |
-
-
-
-\---
-
-
-
-\## 🧹 Data Preprocessing
-
-
-
-Several preprocessing steps were performed before modeling.
-
-
-
-\### 1. Date Conversion
-
-
-
-The dataset contained date values in an ambiguous format.
-
-
-
-Both possible interpretations were tested:
-
-
-
-\- MM/DD/YYYY
-
-\- DD/MM/YYYY
-
-
-
-A date sanity check was performed using the relationship between Order Date and Ship Date.
-
-
-
-The \*\*DD/MM/YYYY\*\* interpretation produced valid shipping dates and realistic shipping durations.
-
-
-
-After correction:
-
-
-
-\- Invalid Order Dates: \*\*0\*\*
-
-\- Invalid Ship Dates: \*\*0\*\*
-
-\- Invalid Shipping Durations: \*\*0\*\*
-
-
-
-\### 2. Missing Values
-
-
-
-The Postal Code column contained:
-
-
-
-\*\*41,296 missing values (80.51%)\*\*
-
-
-
-Since the column had a very high proportion of missing values and was not required for the forecasting task, it was removed.
-
-
-
-\### 3. Duplicate Records
-
-
-
-No duplicate rows were found:
-
-
-
-\*\*Duplicate rows = 0\*\*
-
-
-
-\### 4. Shipping Days Feature
-
-
-
-A new feature was created:
-
-
+Dataset identifier:
 
 ```text
+jr2ngb/superstore-data
+The dataset contains historical sales transactions covering the period from 2011 to 2014.
+
+Dataset Statistics
+Property	Value
+Records	51,290
+Original columns	24
+Date range	2011–2014
+Unique orders	25,035
+Unique customers	1,590
+Unique products	10,292
+Categories	3
+Countries	147
+Total Sales	$12,642,501.91
+
+The dataset contains information related to:
+
+Orders
+Customers
+Products
+Categories
+Sales
+Quantity
+Discount
+Profit
+Shipping
+Regions
+Markets
+Order priority
+🧹 Data Preprocessing
+
+Several preprocessing steps were performed before developing the forecasting models.
+
+Date Conversion
+
+The Order Date and Ship Date columns were converted from text format into proper datetime objects.
+
+Final historical period:
+
+January 2011 – December 2014
+
+Both date columns were successfully validated with no invalid dates.
+
+Shipping Duration
+
+A new feature called Shipping Days was created:
 
 Shipping Days = Ship Date - Order Date
 
+Summary:
 
+Statistic	Value
+Mean	3.97 days
+Minimum	0 days
+Maximum	7 days
+Missing Values
 
-The resulting shipping duration ranged from:
+The major missing-value issue was found in the Postal Code column.
 
+Missing Postal Codes: 41,296
+Percentage: 80.51%
 
+Since postal code was not required for the forecasting objective, it was removed from the modeling dataset.
 
-Minimum: 0 days
+Duplicate Records
 
-Maximum: 7 days
+No duplicate rows were found.
 
-Average: approximately 3.97 days
-
+Duplicate rows = 0
 📈 Exploratory Data Analysis
 
+Exploratory analysis was performed to understand historical sales behavior.
 
+The analysis included:
 
-Several analyses were performed to understand the sales data.
+Monthly sales trends
+Yearly sales performance
+Monthly seasonality
+Category-level sales
+Sub-category sales
+Historical sales extremes
+📅 Yearly Sales
+Year	Total Sales	YoY Change
+2011	$2,259,450.90	—
+2012	$2,677,438.69	+18.50%
+2013	$3,405,746.45	+27.20%
+2014	$4,299,865.87	+26.25%
 
-
-
-Overall Sales
-
-Metric	Value
-
-Total Sales	12,642,501.91
-
-Average Sales per Record	246.49
-
-Median Sales	85.05
-
-Minimum Sales	0.44
-
-Maximum Sales	22,638.48
-
-📅 Yearly Sales Analysis
-
-
-
-Sales increased across the four available years.
-
-
-
-Year	Sales	YoY Growth
-
-2011	2,259,450.90	—
-
-2012	2,677,438.69	18.50%
-
-2013	3,405,746.45	27.20%
-
-2014	4,299,865.87	26.25%
-
-
-
-The dataset shows an overall upward sales trend from 2011 to 2014.
-
-
+The historical data shows increasing annual sales across the four-year period.
 
 📆 Monthly Seasonality
 
+Average monthly sales based on historical monthly totals:
 
+Month	Average Sales
+January	$168,783.42
+February	$135,934.84
+March	$192,625.24
+April	$174,640.30
+May	$226,003.08
+June	$317,429.19
+July	$187,345.46
+August	$323,458.29
+September	$359,345.03
+October	$292,046.10
+November	$387,819.34
+December	$395,195.19
 
-Historical monthly sales were analyzed across all available years.
+Historically, December had the highest average monthly sales, while February had the lowest.
 
-
-
-Month	Total Sales
-
-January	168,783.42
-
-February	135,934.84
-
-March	192,625.24
-
-April	174,640.30
-
-May	226,003.08
-
-June	317,429.19
-
-July	187,345.46
-
-August	323,458.29
-
-September	359,345.03
-
-October	292,046.10
-
-November	387,819.34
-
-December	395,195.19
-
-
-
-The historical highest monthly sales value occurred in November 2014, with sales of approximately 555,279.03.
-
-
-
-🏷️ Category Analysis
-
-
-
-Sales were also analyzed across the three major product categories.
-
-
-
+🛍️ Sales by Category
 Category	Sales	Share
+Technology	$4,744,557.50	37.53%
+Furniture	$4,110,874.19	32.52%
+Office Supplies	$3,787,070.23	29.96%
 
-Technology	4,744,557.50	37.53%
+Technology represented the largest share of total historical sales.
 
-Furniture	4,110,874.19	32.52%
+⚙️ Feature Engineering
 
-Office Supplies	3,787,070.23	29.96%
+The transaction-level dataset was aggregated into monthly sales observations for forecasting.
 
+Several forecasting features were created.
 
-
-Technology generated the largest share of sales in the analyzed dataset.
-
-
-
-📦 Top Sub-Categories
-
-
-
-The highest-selling sub-categories included:
-
-
-
-Sub-Category	Sales
-
-Phones	1,706,824.14
-
-Copiers	1,509,436.27
-
-Chairs	1,501,681.76
-
-Bookcases	1,466,572.24
-
-Storage	1,127,085.86
-
-Appliances	1,011,064.30
-
-Machines	779,060.07
-
-Tables	757,041.92
-
-Accessories	749,237.02
-
-Binders	461,911.51
-
-🤖 Machine Learning Forecasting
-
-Monthly Forecasting Dataset
-
-
-
-For forecasting, daily/transaction-level sales were aggregated into monthly sales.
-
-
-
-Time-series features were created to capture historical patterns.
-
-
-
-Features
-
+Calendar Features
 Year
-
 Month
-
 Quarter
-
-Lag\_1
-
-Lag\_2
-
-Lag\_3
-
-Lag\_6
-
-Lag\_12
-
-Rolling\_Mean\_3
-
-Rolling\_Mean\_6
-
-Rolling\_Mean\_12
-
 Lag Features
 
+Historical sales values from previous months were used to capture temporal dependencies:
 
+Lag_1
+Lag_2
+Lag_3
+Lag_6
+Lag_12
+Rolling Features
 
-Lag features represent previous sales values.
+Rolling averages were also calculated:
 
+Rolling_Mean_3
+Rolling_Mean_6
+Rolling_Mean_12
 
+The rolling features were calculated using previous observations only to prevent future information from leaking into the model.
 
-For example:
+After applying the required lag and rolling windows:
 
+Initial monthly observations: 48
+Final forecasting observations: 36
+🔀 Train-Test Split
 
+Because this is a time-based forecasting problem, a random train-test split was not used.
 
-Lag\_1  → Previous month's sales
+Instead, the observations were divided chronologically using an 80/20 split.
 
-Lag\_2  → Sales from two months earlier
+Training Data
+January 2012 – April 2014
+28 observations
+Testing Data
+May 2014 – December 2014
+8 observations
 
-Lag\_12 → Sales from the same month in the previous year
+This preserves the temporal order and prevents future observations from being used during training.
 
-Rolling Mean Features
+🤖 Machine Learning Models
 
+Two regression models were developed.
 
+1. Linear Regression
 
-Rolling averages were used to capture recent historical trends.
+Linear Regression was used as a baseline forecasting model.
 
+It learns relationships between the engineered temporal features and monthly sales.
 
+2. Random Forest Regressor
 
-Examples:
-
-
-
-Rolling\_Mean\_3
-
-Rolling\_Mean\_6
-
-Rolling\_Mean\_12
-
-🧪 Train-Test Split
-
-
-
-Because sales forecasting is a time-dependent problem, a chronological split was used instead of random train-test splitting.
-
-
-
-The forecasting dataset contained 36 monthly observations after feature engineering.
-
-
-
-Dataset	Period	Observations
-
-Training	Jan 2012 – Apr 2014	28
-
-Testing	May 2014 – Dec 2014	8
-
-
-
-This approach prevents future observations from being used to train the model before they occur.
-
-
+Random Forest Regression was implemented as a tree-based ensemble model capable of learning nonlinear relationships between the forecasting features and sales.
 
 📊 Model Evaluation
 
+The models were evaluated using:
 
+MAE
 
-Two machine learning models were trained and evaluated.
+Mean Absolute Error measures the average absolute difference between actual and predicted sales.
 
+Lower values indicate smaller prediction errors.
 
+RMSE
 
-Models
+Root Mean Squared Error gives greater weight to larger prediction errors.
 
-Linear Regression
-
-Random Forest Regressor
-
-Evaluation Metrics
-
-
-
-The following metrics were used:
-
-
-
-MAE (Mean Absolute Error)
-
-RMSE (Root Mean Squared Error)
+Lower values indicate better predictive accuracy.
 
 R² Score
 
-Model Comparison
+R² measures the proportion of variation in the target variable explained by the model on the evaluation data.
 
+Model Performance
 Model	MAE	RMSE	R²
+Linear Regression	$69,068.00	$79,598.36	0.3147
+Random Forest	$88,431.76	$100,283.78	-0.0878
 
-Linear Regression	69,068.00	79,598.36	0.3147
+On the chronological test set, Linear Regression produced lower MAE and RMSE values and a higher R² than Random Forest.
 
-Random Forest	88,431.76	100,283.78	-0.0878
+Based on these test-set results, Linear Regression was used for the future forecasting stage.
 
-
-
-On the selected eight-month test period, Linear Regression produced lower MAE and RMSE and a higher R² score than Random Forest.
-
-
-
-Therefore, Linear Regression was selected for the future forecasting stage of this project.
-
-
-
-🌲 Random Forest Feature Importance
-
-
-
-The Random Forest model provided feature importance information.
-
-
-
-The most influential features included:
-
-
-
-Feature	Importance
-
-Lag\_12	0.8122
-
-Month	0.0529
-
-Lag\_6	0.0347
-
-Rolling\_Mean\_12	0.0338
-
-Rolling\_Mean\_3	0.0163
-
-
-
-The high importance of Lag\_12 indicates that sales from the same month in the previous year were particularly informative for this dataset.
-
-
+Note: These results are specific to the selected dataset, features, model configurations, and eight-month test period.
 
 🔮 Future Sales Forecast
 
+The Linear Regression model was used to generate a recursive six-month forecast.
 
-
-The selected Linear Regression model was used to forecast sales for:
-
-
+Forecast period:
 
 January 2015 – June 2015
-
-
-
+Forecast Results
 Month	Forecasted Sales
-
-January 2015	238,103.84
-
-February 2015	178,025.47
-
-March 2015	269,086.65
-
-April 2015	272,591.10
-
-May 2015	348,741.56
-
-June 2015	457,920.93
-
+January 2015	$238,103.84
+February 2015	$178,025.47
+March 2015	$269,086.65
+April 2015	$272,591.10
+May 2015	$348,741.56
+June 2015	$457,920.93
 Forecast Summary
 
-Total forecasted sales: 1,764,469.54
+Average monthly forecast:
 
-Average monthly forecast: 294,078.26
+$294,078.26
 
-Highest forecast: June 2015 – 457,920.93
+Total forecast for six months:
 
-Lowest forecast: February 2015 – 178,025.47
+$1,764,469.54
 
+Highest forecast:
 
+June 2015 — $457,920.93
 
-The forecast indicates variation across the six-month period, with higher predicted sales toward May and June.
+Lowest forecast:
 
+February 2015 — $178,025.47
 
+The future forecasting process was recursive, meaning that predicted values were incorporated into the lag and rolling features used for subsequent forecast months.
 
-💡 Business Insights
+💼 Business Insights
 
+The analysis provides several potential business applications.
 
+1. Inventory Planning
 
-Based on the historical analysis and forecasting results, several practical insights can be considered.
+Forecasted sales can help businesses plan inventory levels and prepare for periods of higher expected demand.
 
+2. Seasonal Planning
 
+Historical sales show considerable variation across months. Seasonal patterns can therefore be considered when planning procurement and inventory.
 
-1\. Inventory Planning
+3. Marketing Planning
 
+Marketing campaigns can be aligned with periods of stronger historical sales activity.
 
+4. Category Management
 
-Forecasted demand can help businesses plan inventory levels and reduce the risk of both overstocking and stock shortages.
+Technology contributed approximately 37.53% of total historical sales, making category-level analysis useful for product planning.
 
+5. Operational Planning
 
+Sales forecasts can support decisions related to staffing, logistics, procurement, and resource allocation.
 
-2\. Seasonal Planning
+6. Data-Driven Decision Making
 
+Combining historical analysis with predictive modeling provides a quantitative approach to planning instead of relying entirely on historical intuition.
 
+📊 Project Visualizations
 
-Historical monthly patterns can support preparation for months with relatively higher expected sales.
+The project generates the following visualizations:
 
+Historical Monthly Sales
 
+Annual Sales Performance
 
-3\. Marketing Planning
+Monthly Seasonality
 
+Sales by Category
 
+Model Comparison
 
-Marketing campaigns and promotional activities can be aligned with expected demand periods.
-
-
-
-4\. Category Management
-
-
-
-Category-level sales analysis can help businesses monitor high-contribution product categories and sub-categories.
-
-
-
-5\. Operational Planning
-
-
-
-Forecasts can support planning for procurement, warehouse operations, staffing, and logistics.
-
-
-
-6\. Data-Driven Decision Making
-
-
-
-Machine learning forecasts can be used as one input alongside business knowledge, market conditions, promotions, and other operational information.
-
-
+Historical Sales and Future Forecast
 
 📁 Project Structure
-
-sales\_forecasting\_project/
-
+sales_forecasting_project/
 │
-
+├── README.md
+│
 ├── data/
-
-│   └── monthly\_forecasting\_dataset.csv
-
+│   └── monthly_forecasting_dataset.csv
 │
-
 ├── models/
-
-│   ├── linear\_regression\_model.pkl
-
-│   └── random\_forest\_model.pkl
-
+│   ├── linear_regression_model.pkl
+│   └── random_forest_model.pkl
 │
-
 ├── notebooks/
-
-│   └── Sales\_Forecasting\_EncoderX\_Batch02.ipynb
-
+│   └── Sales_Forecasting_EncoderX_Batch02.ipynb
 │
-
 ├── outputs/
-
+│   │
 │   ├── analysis/
-
-│   │   ├── historical\_monthly\_sales.csv
-
-│   │   ├── yearly\_sales\_analysis.csv
-
-│   │   ├── monthly\_seasonality.csv
-
-│   │   ├── category\_sales\_analysis.csv
-
-│   │   ├── subcategory\_sales\_analysis.csv
-
-│   │   └── model\_comparison.csv
-
+│   │   ├── category_sales_analysis.csv
+│   │   ├── historical_monthly_sales.csv
+│   │   ├── model_comparison.csv
+│   │   ├── monthly_seasonality.csv
+│   │   ├── subcategory_sales_analysis.csv
+│   │   └── yearly_sales_analysis.csv
 │   │
-
 │   ├── figures/
-
-│   │   ├── 01\_historical\_monthly\_sales.png
-
-│   │   ├── 02\_yearly\_sales.png
-
-│   │   ├── 03\_monthly\_seasonality.png
-
-│   │   ├── 04\_category\_sales.png
-
-│   │   ├── 05\_model\_comparison.png
-
-│   │   └── 06\_historical\_future\_forecast.png
-
+│   │   ├── 01_historical_monthly_sales.png
+│   │   ├── 02_yearly_sales.png
+│   │   ├── 03_monthly_seasonality.png
+│   │   ├── 04_category_sales.png
+│   │   ├── 05_model_comparison.png
+│   │   └── 06_historical_future_forecast.png
 │   │
-
 │   └── forecasts/
-
-│       └── future\_sales\_forecast.csv
-
+│       └── future_sales_forecast.csv
 │
-
-├── src/
-
-│
-
-├── .gitignore
-
-├── requirements.txt
-
-└── README.md
-
+└── src/
+    └── [project source code]
 🛠️ Technologies Used
-
+Programming Language
 Python
-
+Libraries
 Pandas
-
 NumPy
-
 Matplotlib
-
 Scikit-learn
-
 Joblib
-
+Development Environment
 Jupyter Notebook
-
-⚙️ Installation
-
-
-
-Clone the repository:
-
-
-
-git clone https://github.com/YOUR-USERNAME/sales-forecasting-machine-learning.git
-
-
-
-Navigate to the project directory:
-
-
-
-cd sales-forecasting-machine-learning
-
-
-
-Install the required dependencies:
-
-
-
-pip install -r requirements.txt
-
-▶️ How to Run
-
-
-
-Start Jupyter Notebook:
-
-
-
-jupyter notebook
-
-
-
-Open:
-
-
-
-notebooks/Sales\_Forecasting\_EncoderX\_Batch02.ipynb
-
-
-
-Run the notebook cells sequentially to reproduce the analysis and forecasting workflow.
-
-
-
-📌 Generated Outputs
-
-
-
-The project generates:
-
-
-
-Analysis Files
-
-Historical monthly sales
-
-Yearly sales analysis
-
-Monthly seasonality analysis
-
-Category sales analysis
-
-Sub-category sales analysis
-
-Model comparison
-
-Visualization Files
-
-Historical sales trend
-
-Yearly sales comparison
-
-Monthly seasonality
-
-Category sales distribution
-
-Model performance comparison
-
-Historical vs future forecast
-
-Forecast
-
-outputs/forecasts/future\_sales\_forecast.csv
-
-⚠️ Limitations
-
-
-
-This project has several limitations:
-
-
-
-The forecasting dataset contains only 36 monthly observations after feature engineering.
-
-Only a small number of machine learning models were evaluated.
-
-External factors such as holidays, promotions, economic conditions, competitor activity, and market trends were not included.
-
-The future forecast is based on historical sales patterns and engineered time-series features.
-
-Model performance may change when evaluated on a different time period or a larger dataset.
-
-🚀 Future Improvements
-
-
-
-Future versions of this project could include:
-
-
-
-More historical data.
-
-Additional external variables.
-
-Holiday and promotional features.
-
-Advanced time-series models.
-
-Hyperparameter tuning.
-
-Cross-validation designed specifically for time-series data.
-
-Automated forecasting pipelines.
-
-Interactive dashboards using Streamlit or Power BI.
-
-Deployment of the forecasting model as a web application or API.
-
-🎓 Internship Project
-
-
-
-This project was completed as part of the EncoderX Internship.
-
-
-
-The project provided practical experience in:
-
-
-
-Data preprocessing
-
-Exploratory data analysis
-
-Feature engineering
-
-Time-series forecasting
-
-Machine learning
-
-Model evaluation
-
-Data visualization
-
-Business-oriented interpretation
+Python
+Git
+GitHub
+Machine Learning
+Linear Regression
+Random Forest Regression
+Evaluation Metrics
+MAE
+RMSE
+R²
+Limitations
+
+Although the project demonstrates a complete sales forecasting workflow, several limitations should be considered.
+
+The forecasting dataset contains a relatively small number of monthly observations.
+Only eight observations were available in the chronological test set.
+External factors such as holidays, promotions, advertising expenditure, economic conditions, and competitor activity were not included.
+The future forecast is based on historical sales patterns and engineered temporal features.
+Recursive forecasting means that future predictions depend partly on previous predicted values.
+Model performance may change when additional historical data and external forecasting variables become available.
+🔮 Future Improvements
+
+The project could be extended by:
+
+Adding holiday information
+Including promotional data
+Incorporating marketing expenditure
+Adding economic indicators
+Testing additional forecasting models
+Performing time-series cross-validation
+Increasing the forecasting horizon
+Hyperparameter tuning
+Adding external demand-related features
+Comparing machine learning models with dedicated time-series models such as ARIMA or SARIMA
+Deploying the forecasting model through a Streamlit dashboard
+📌 Key Takeaway
+
+This project demonstrates an end-to-end machine learning workflow for sales forecasting, beginning with raw transactional data and progressing through preprocessing, exploratory analysis, feature engineering, model development, evaluation, forecasting, and business interpretation.
+
+The analysis shows how historical sales patterns can be transformed into predictive features and used to support data-driven business planning.
 
 👩‍💻 Author
 
-
-
 Aiman Babar
 
-
-
-BS Bioinformatics Student
-
+BS Bioinformatics
 University of Agriculture Faisalabad
 
+🎓 Internship
 
+EncoderX Remote Internship — Batch 02
 
-⭐ Project Summary
+Task: Sales Forecasting
 
+This project was completed as part of the Data Science internship task.
 
+📄 License
 
-This project demonstrates an end-to-end machine learning workflow for sales forecasting:
+This project is intended for educational and portfolio purposes.
 
+Please refer to the original dataset source for dataset-specific licensing and usage terms.
 
+⭐ Acknowledgements
 
-Raw Sales Data
-
-&#x20;     ↓
-
-Data Cleaning
-
-&#x20;     ↓
-
-Date Validation
-
-&#x20;     ↓
-
-Exploratory Data Analysis
-
-&#x20;     ↓
-
-Monthly Aggregation
-
-&#x20;     ↓
-
-Time-Series Feature Engineering
-
-&#x20;     ↓
-
-Chronological Train/Test Split
-
-&#x20;     ↓
-
-Machine Learning Models
-
-&#x20;     ↓
-
-Model Evaluation
-
-&#x20;     ↓
-
-Model Selection
-
-&#x20;     ↓
-
-Future Sales Forecast
-
-&#x20;     ↓
-
-Business Insights
-
-
-
-The project combines data analysis and machine learning to transform historical sales data into practical forecasting insights.
-
-
-
-
-
+I would like to thank EncoderX for providing this learning opportunity and for creating an environment where I could apply data science and machine learning concepts to a practical business problem.
